@@ -1,11 +1,21 @@
-import { Box, Code, Text } from "@chakra-ui/react";
+import { Code } from "@chakra-ui/react";
 import { IPAdressData } from "../services/types";
 import { Card } from "./Card";
+import { Loader } from "./Loader";
 
-export const LocationInfo: React.FC<{ data?: IPAdressData }> = ({ data }) => {
+type LocationInfoProps = { data?: IPAdressData; isLoading?: boolean };
+
+export const LocationInfo: React.FC<LocationInfoProps> = ({
+  data,
+  isLoading,
+}) => {
   return (
     <Card flex="2" overflowY="auto">
-      <Code as="pre">{JSON.stringify(data, null, 2)}</Code>
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <Code as="pre">{JSON.stringify(data, null, 2)}</Code>
+      )}
     </Card>
   );
 };

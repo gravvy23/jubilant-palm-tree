@@ -1,17 +1,24 @@
+import { useState } from "react";
 import type { NextPage } from "next";
 import Head from "next/head";
 import { Box, Flex } from "@chakra-ui/react";
 import {
   useGetCurrentIPAddressQuery,
-  useGetIpAddressDataByNameQuery,
+  useLazyGetIpAddressDataByNameQuery,
 } from "../services/ipAdresses";
-import { LocationInfo, Map, SearchInput } from "../components";
+import { LocationInfo, Map, SearchInput, IPAddressList } from "../components";
+import type { Location } from "../components/IPAddressList";
 
 const Home: NextPage = () => {
-  // const { data } = useGetIpAddressDataByNameQuery("94.254.172.127");
-  const { data } = useGetCurrentIPAddressQuery();
+  const [locations, setLocations] = useState<Location[]>([
+    { key: "1", value: "www.google.pl" },
+    { key: "2", value: "test.com" },
+  ]);
+  const { data: currentUser, isLoading: isCurrentUserIPLoading } =
+    useGetCurrentIPAddressQuery();
+  const [getAddressDataByName, { data: searchResult, isFetching }] =
+    useLazyGetIpAddressDataByNameQuery();
 
-  console.log(data);
   return (
     <Box>
       <Head>
@@ -21,22 +28,27 @@ const Home: NextPage = () => {
       </Head>
 
       <Flex as="main" h="100vh" p="4">
-        <Box border="1px" m="2" minW="60">
-          list
-        </Box>
+        <IPAddressList locations={locations} />
         <Flex flexDir="column" w="full" h="full">
           <Flex flex="1" maxH="45%">
-            <Map longitude={data?.longitude} latitude={data?.latitude} />
-            <LocationInfo data={data} />
+            <Map
+              isLoading={isCurrentUserIPLoading}
+              longitude={currentUser?.longitude}
+              latitude={currentUser?.latitude}
+            />
+            <LocationInfo
+              isLoading={isCurrentUserIPLoading}
+              data={currentUser}
+            />
           </Flex>
-          <SearchInput />
+          <SearchInput isLoading={isFetching} onSearch={getAddressDataByName} />
           <Flex flex="1" maxH="45%">
-            <Box flex="3" border="1px" m="2">
-              last user map
-            </Box>
-            <Box flex="2" border="1px" m="2">
-              last user info
-            </Box>
+            <Map
+              isLoading={isFetching}
+              longitude={searchResult?.longitude}
+              latitude={searchResult?.latitude}
+            />
+            <LocationInfo isLoading={isFetching} data={searchResult} />
           </Flex>
         </Flex>
       </Flex>

@@ -8,5 +8,6 @@ export const Card: React.FC<BoxProps> = (props) => (
     borderRadius="lg"
     m="2"
     p="2"
+    position="relative"
   ></Box>
 );
