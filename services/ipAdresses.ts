@@ -11,7 +11,15 @@ export const ipAdressesApi = createApi({
     getIpAddressDataByName: builder.query<IPAdressData, string>({
       query: (name) => `${name}?access_key=${ACCESS_KEY}`,
     }),
+    getCurrentIPAddress: builder.query<IPAdressData, void>({
+      query: () => `check?access_key=${ACCESS_KEY}`,
+    }),
   }),
 });
 
-export const { useGetIpAddressDataByNameQuery } = ipAdressesApi;
+export const {
+  useGetIpAddressDataByNameQuery,
+  useLazyGetIpAddressDataByNameQuery,
+  useGetCurrentIPAddressQuery,
+  useLazyGetCurrentIPAddressQuery,
+} = ipAdressesApi;

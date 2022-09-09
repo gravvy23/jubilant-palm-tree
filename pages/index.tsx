@@ -1,11 +1,15 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import Image from "next/image";
-import { Box, Flex, Input, Button } from "@chakra-ui/react";
-import { useGetIpAddressDataByNameQuery } from "../services/ipAdresses";
+import { Box, Flex } from "@chakra-ui/react";
+import {
+  useGetCurrentIPAddressQuery,
+  useGetIpAddressDataByNameQuery,
+} from "../services/ipAdresses";
+import { LocationInfo, Map, SearchInput } from "../components";
 
 const Home: NextPage = () => {
-  const { data } = useGetIpAddressDataByNameQuery("94.254.172.127");
+  // const { data } = useGetIpAddressDataByNameQuery("94.254.172.127");
+  const { data } = useGetCurrentIPAddressQuery();
 
   console.log(data);
   return (
@@ -21,21 +25,12 @@ const Home: NextPage = () => {
           list
         </Box>
         <Flex flexDir="column" w="full" h="full">
-          <Flex flex="1">
-            <Box flex="3" border="1px" m="2">
-              current user map
-            </Box>
-            <Box flex="2" border="1px" m="2">
-              current user info
-            </Box>
+          <Flex flex="1" maxH="45%">
+            <Map longitude={data?.longitude} latitude={data?.latitude} />
+            <LocationInfo data={data} />
           </Flex>
-          <Flex m="2">
-            <Input size="lg" />
-            <Button variant="solid" colorScheme="blue" size="lg">
-              Search
-            </Button>
-          </Flex>
-          <Flex flex="1">
+          <SearchInput />
+          <Flex flex="1" maxH="45%">
             <Box flex="3" border="1px" m="2">
               last user map
             </Box>
