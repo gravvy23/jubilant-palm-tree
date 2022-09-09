@@ -1,23 +1,31 @@
-import { useState } from "react";
+import { useCallback } from "react";
 import type { NextPage } from "next";
 import Head from "next/head";
 import { Box, Flex } from "@chakra-ui/react";
+import { v4 as uuidv4 } from "uuid";
 import {
   useGetCurrentIPAddressQuery,
   useLazyGetIpAddressDataByNameQuery,
 } from "../services/ipAdresses";
 import { LocationInfo, Map, SearchInput, IPAddressList } from "../components";
-import type { Location } from "../components/IPAddressList";
+import { useAppSelector, useAppDispatch } from "../hooks";
+import { add } from "../features/location/locationSlice";
 
 const Home: NextPage = () => {
-  const [locations, setLocations] = useState<Location[]>([
-    { key: "1", value: "www.google.pl" },
-    { key: "2", value: "test.com" },
-  ]);
+  const locations = useAppSelector((state) => state.location.locations);
+  const dispatch = useAppDispatch();
   const { data: currentUser, isLoading: isCurrentUserIPLoading } =
     useGetCurrentIPAddressQuery();
   const [getAddressDataByName, { data: searchResult, isFetching }] =
     useLazyGetIpAddressDataByNameQuery();
+
+  const handleSearchLocation = useCallback(
+    async (location: string) => {
+      await getAddressDataByName(location);
+      dispatch(add({ value: location, key: uuidv4() }));
+    },
+    [dispatch, getAddressDataByName]
+  );
 
   return (
     <Box>
@@ -41,7 +49,7 @@ const Home: NextPage = () => {
               data={currentUser}
             />
           </Flex>
-          <SearchInput isLoading={isFetching} onSearch={getAddressDataByName} />
+          <SearchInput isLoading={isFetching} onSearch={handleSearchLocation} />
           <Flex flex="1" maxH="45%">
             <Map
               isLoading={isFetching}

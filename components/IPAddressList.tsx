@@ -1,7 +1,6 @@
 import { OrderedList, ListItem } from "@chakra-ui/react";
 import { Card } from "./Card";
-
-export type Location = { value: string; key: string };
+import { Location } from "../features/location/locationSlice";
 
 type IPAddressListProps = {
   locations: Location[];
