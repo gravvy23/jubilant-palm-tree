@@ -6,7 +6,7 @@ const ACCESS_KEY = process.env.NEXT_PUBLIC_API_KEY;
 
 export const ipAdressesApi = createApi({
   reducerPath: "ipAdressesApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://api.ipstack.com/" }),
+  baseQuery: fetchBaseQuery({ baseUrl: "https://api.ipstack.com/" }),
   endpoints: (builder) => ({
     getIpAddressDataByName: builder.query<IPAdressData | ErrorResponse, string>(
       {
