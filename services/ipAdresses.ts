@@ -2,7 +2,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type { ErrorResponse, IPAdressData } from "./types";
 
-const ACCESS_KEY = "5bb173a6e58f594ef432c62f77f4f521";
+const ACCESS_KEY = process.env.NEXT_PUBLIC_API_KEY;
 
 export const ipAdressesApi = createApi({
   reducerPath: "ipAdressesApi",
