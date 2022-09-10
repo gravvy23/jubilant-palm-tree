@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import type { NextPage } from "next";
 import Head from "next/head";
 import { Box, Flex } from "@chakra-ui/react";
@@ -10,6 +10,7 @@ import {
 import { LocationInfo, Map, SearchInput, IPAddressList } from "../components";
 import { useAppSelector, useAppDispatch } from "../hooks";
 import { add } from "../features/location/locationSlice";
+import { ErrorResponse, IPAdressData } from "../services/types";
 
 const Home: NextPage = () => {
   const locations = useAppSelector((state) => state.location.locations);
@@ -18,11 +19,17 @@ const Home: NextPage = () => {
     useGetCurrentIPAddressQuery();
   const [getAddressDataByName, { data: searchResult, isFetching }] =
     useLazyGetIpAddressDataByNameQuery();
+  const [error, setError] = useState("");
 
   const handleSearchLocation = useCallback(
     async (location: string) => {
-      await getAddressDataByName(location);
-      dispatch(add({ value: location, key: uuidv4() }));
+      const { data } = await getAddressDataByName(location);
+      if ((data as ErrorResponse).error) {
+        setError((data as ErrorResponse).error.info);
+      } else {
+        dispatch(add({ value: location, key: uuidv4() }));
+        setError("");
+      }
     },
     [dispatch, getAddressDataByName]
   );
@@ -49,12 +56,16 @@ const Home: NextPage = () => {
               data={currentUser}
             />
           </Flex>
-          <SearchInput isLoading={isFetching} onSearch={handleSearchLocation} />
+          <SearchInput
+            isLoading={isFetching}
+            onSearch={handleSearchLocation}
+            error={error}
+          />
           <Flex flex="1" maxH="45%">
             <Map
               isLoading={isFetching}
-              longitude={searchResult?.longitude}
-              latitude={searchResult?.latitude}
+              longitude={(searchResult as IPAdressData)?.longitude}
+              latitude={(searchResult as IPAdressData)?.latitude}
             />
             <LocationInfo isLoading={isFetching} data={searchResult} />
           </Flex>

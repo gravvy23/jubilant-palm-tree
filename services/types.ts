@@ -12,9 +12,8 @@ export type IPAdressData = {
   zip: string;
   latitude: number;
   longitude: number;
-  location: {}; // TODO: fill
-  time_zone: {}; // TODO: fill
-  currency: {}; // TODO: fill
-  connection: {}; // TODO: fill
-  security: {}; // TODO: fill
+};
+
+export type ErrorResponse = {
+  error: { code: number; info: string; type: string };
 };

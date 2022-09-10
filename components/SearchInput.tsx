@@ -1,13 +1,22 @@
 import React, { useState, useCallback } from "react";
-import { Flex, Input, Button } from "@chakra-ui/react";
+import {
+  Flex,
+  Input,
+  Button,
+  FormControl,
+  FormHelperText,
+  FormErrorMessage,
+} from "@chakra-ui/react";
 
 type SearchInputProps = {
   isLoading: boolean;
+  error: string;
   onSearch: (name: string) => void;
 };
 
 export const SearchInput: React.FC<SearchInputProps> = ({
   isLoading,
+  error,
   onSearch,
 }) => {
   const [value, setValue] = useState("");
@@ -24,12 +33,15 @@ export const SearchInput: React.FC<SearchInputProps> = ({
 
   return (
     <Flex m="2">
-      <Input
-        size="lg"
-        value={value}
-        name="ipAddress"
-        onChange={handleOnInputChange}
-      />
+      <FormControl isInvalid={!!error}>
+        <Input
+          size="lg"
+          value={value}
+          name="ipAddress"
+          onChange={handleOnInputChange}
+        />
+        <FormErrorMessage>{error}</FormErrorMessage>
+      </FormControl>
       <Button
         disabled={value.trim() === ""}
         ml="3"
